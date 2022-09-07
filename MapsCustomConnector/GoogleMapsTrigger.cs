@@ -46,7 +46,7 @@ namespace MapsCustomConnector
         /// <param name="req"><see cref="HttpRequest"/> instance.</param>
         /// <returns>Returns <see cref="FileContentResult"/> as the <c>image/png</c> format.</returns>
         [FunctionName(nameof(GoogleMapsTrigger))]
-        [OpenApiOperation(operationId: "Run", tags: new[] { "maps" })]
+        [OpenApiOperation(operationId: "GetGoogleMap", tags: new[] { "maps" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiParameter(name: "lat", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **latitude** parameter")]
         [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
