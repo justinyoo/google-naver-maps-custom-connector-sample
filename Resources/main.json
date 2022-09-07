@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "417646265593519016"
+      "templateHash": "17934565045361165957"
     }
   },
   "parameters": {
@@ -615,7 +615,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "9183572448031849966"
+              "templateHash": "4995471985537343253"
             }
           },
           "parameters": {
@@ -626,6 +626,10 @@
               "type": "string",
               "defaultValue": "[resourceGroup().location]"
             }
+          },
+          "variables": {
+            "shortname": "[format('{0}fnc', parameters('name'))]",
+            "longname": "[format('{0}-fnc', parameters('name'))]"
           },
           "resources": [
             {
@@ -639,7 +643,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('name')]"
+                    "value": "[variables('shortname')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -769,7 +773,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('name')]"
+                    "value": "[variables('longname')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -843,7 +847,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('name')]"
+                    "value": "[variables('longname')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -934,7 +938,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('name')]"
+                    "value": "[variables('longname')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -1002,7 +1006,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('name')]"
+                    "value": "[variables('longname')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"

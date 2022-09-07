@@ -1,10 +1,13 @@
 param name string
 param location string = resourceGroup().location
 
+var shortname = '${name}fnc'
+var longname = '${name}-fnc'
+
 module st './storageAccount.bicep' = {
     name: 'StorageAccount_FunctionApp'
     params: {
-        name: name
+        name: shortname
         location: location
     }
 }
@@ -12,7 +15,7 @@ module st './storageAccount.bicep' = {
 module wrkspc './logAnalyticsWorkspace.bicep' = {
     name: 'LogAnalyticsWorkspace_FunctionApp'
     params: {
-        name: name
+        name: longname
         location: location
     }
 }
@@ -20,7 +23,7 @@ module wrkspc './logAnalyticsWorkspace.bicep' = {
 module appins './appInsights.bicep' = {
     name: 'ApplicationInsights_FunctionApp'
     params: {
-        name: name
+        name: longname
         location: location
         workspaceId: wrkspc.outputs.id
     }
@@ -29,7 +32,7 @@ module appins './appInsights.bicep' = {
 module csplan './consumptionPlan.bicep' = {
     name: 'ConsumptionPlan_FunctionApp'
     params: {
-        name: name
+        name: longname
         location: location
     }
 }
@@ -37,7 +40,7 @@ module csplan './consumptionPlan.bicep' = {
 module fncapp './functionApp.bicep' = {
     name: 'FunctionApp_FunctionApp'
     params: {
-        name: name
+        name: longname
         location: location
         storageAccountConnectionString: st.outputs.connectionString
         appInsightsInstrumentationKey: appins.outputs.instrumentationKey
