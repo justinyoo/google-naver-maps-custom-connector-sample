@@ -19,24 +19,24 @@ using Microsoft.OpenApi.Models;
 namespace MapsCustomConnector
 {
     /// <summary>
-    /// This represents the HTTP trigger entity for Google Maps API.
+    /// This represents the HTTP trigger entity for Naver Map API.
     /// </summary>
-    public class GoogleMapsTrigger
+    public class NaverMapsTrigger
     {
         private readonly MapsSettings _settings;
         private readonly HttpClient _http;
-        private readonly ILogger<GoogleMapsTrigger> _logger;
+        private readonly ILogger<NaverMapsTrigger> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GoogleMapsTrigger"/> class.
+        /// Initializes a new instance of the <see cref="NaverMapsTrigger"/> class.
         /// </summary>
         /// <param name="settings"><see cref="MapsSettings"/> instance.</param>
         /// <param name="factory"><see cref="IHttpClientFactory"/> instance.</param>
         /// <param name="log"><see cref="ILogger{TCategoryName}"/> instance.</param>
-        public GoogleMapsTrigger(MapsSettings settings, IHttpClientFactory factory, ILogger<GoogleMapsTrigger> log)
+        public NaverMapsTrigger(MapsSettings settings, IHttpClientFactory factory, ILogger<NaverMapsTrigger> log)
         {
             this._settings = settings.ThrowIfNullOrDefault();
-            this._http = factory.ThrowIfNullOrDefault().CreateClient("google");
+            this._http = factory.ThrowIfNullOrDefault().CreateClient("naver");
             this._logger = log.ThrowIfNullOrDefault();
         }
 
@@ -45,14 +45,14 @@ namespace MapsCustomConnector
         /// </summary>
         /// <param name="req"><see cref="HttpRequest"/> instance.</param>
         /// <returns>Returns <see cref="FileContentResult"/> as the <c>image/png</c> format.</returns>
-        [FunctionName(nameof(GoogleMapsTrigger))]
+        [FunctionName(nameof(NaverMapsTrigger))]
         [OpenApiOperation(operationId: "Run", tags: new[] { "maps" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiParameter(name: "lat", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **latitude** parameter")]
         [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "image/png", bodyType: typeof(byte[]), Description = "The OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "maps/google")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "maps/naver")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -60,16 +60,21 @@ namespace MapsCustomConnector
             var longitude = req.Query["long"];
 
             var sb = new StringBuilder();
-            sb.Append("https://maps.googleapis.com/maps/api/staticmap")
-              .Append($"?center={latitude},{longitude}")
-              .Append("&size=400x400")
-              .Append("&zoom=14")
-              .Append($"&markers=color:red|{latitude},{longitude}")
-              .Append("&format=png32")
-              .Append($"&key={this._settings.Google.ApiKey}");
+            sb.Append("https://naveropenapi.apigw.ntruss.com/map-static/v2/raster")
+              .Append($"?center={longitude},{latitude}")
+              .Append("&w=400")
+              .Append("&h=400")
+              .Append("&level=13")
+              .Append($"&markers=color:blue|pos:{longitude}%20{latitude}")
+              .Append("&format=png")
+              .Append("&lang=en");
             var requestUri = new Uri(sb.ToString());
 
-            var result = await this._http.GetByteArrayAsync(requestUri).ConfigureAwait(false);
+            this._http.DefaultRequestHeaders.Clear();
+            this._http.DefaultRequestHeaders.Add("X-NCP-APIGW-API-KEY-ID", this._settings.Naver.ClientId);
+            this._http.DefaultRequestHeaders.Add("X-NCP-APIGW-API-KEY", this._settings.Naver.ClientSecret);
+
+            var result = await this._http.GetByteArrayAsync(requestUri);
 
             return new FileContentResult(result, "image/png");
         }
