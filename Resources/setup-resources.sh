@@ -9,7 +9,7 @@ urls=$(curl -H "Accept: application/vnd.github.v3+json" \
 resource_group="rg-$AZ_RESOURCE_NAME"
 
 # Deploy Function app
-fncapp_name="fncapp-$AZ_RESOURCE_NAME"
+fncapp_name="fncapp-$AZ_RESOURCE_NAME-$AZ_RESOURCE_SUFFIX"
 fncapp_zip=$(echo $urls | jq --argjson value 0 '.[$value]' -r)
 fncapp=$(az functionapp deploy -g $resource_group -n $fncapp_name --src-url $fncapp_zip --type zip)
 fncapp_url="https://$fncapp_name.azurewebsites.net/api/openapi/v3.json"

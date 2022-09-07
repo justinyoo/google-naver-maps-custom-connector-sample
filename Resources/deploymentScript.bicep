@@ -34,6 +34,7 @@ var deploymentScript = {
     name: 'depscrpt-${name}'
     location: location
     resourceName: name
+    suffix: 'api'
     gitHubBranchName: gitHubBranchName
     storageContainerName: storageContainerName
     containerGroupName: 'contgrp-${name}'
@@ -63,6 +64,10 @@ resource ds 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
             {
                 name: 'AZ_RESOURCE_NAME'
                 value: deploymentScript.resourceName
+            }
+            {
+                name: 'AZ_RESOURCE_SUFFIX'
+                value: deploymentScript.suffix
             }
             {
                 name: 'GH_BRANCH_NAME'

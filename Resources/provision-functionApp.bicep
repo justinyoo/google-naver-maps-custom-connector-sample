@@ -3,8 +3,8 @@ param location string = resourceGroup().location
 
 param storageContainerName string
 
-var shortname = '${name}fnc'
-var longname = '${name}-fnc'
+var shortname = '${name}api'
+var longname = '${name}-api'
 
 module st './storageAccount.bicep' = {
     name: 'StorageAccount_FunctionApp'

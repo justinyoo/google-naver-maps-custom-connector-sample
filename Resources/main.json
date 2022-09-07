@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "5817942212376213644"
+      "templateHash": "15733216027179871647"
     }
   },
   "parameters": {
@@ -615,7 +615,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "3703074213905778057"
+              "templateHash": "1475703592142349075"
             }
           },
           "parameters": {
@@ -631,8 +631,8 @@
             }
           },
           "variables": {
-            "shortname": "[format('{0}fnc', parameters('name'))]",
-            "longname": "[format('{0}-fnc', parameters('name'))]"
+            "shortname": "[format('{0}api', parameters('name'))]",
+            "longname": "[format('{0}-api', parameters('name'))]"
           },
           "resources": [
             {
@@ -1198,7 +1198,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "8304603040209903772"
+              "templateHash": "2398601869878939729"
             }
           },
           "parameters": {
@@ -1231,6 +1231,7 @@
               "name": "[format('depscrpt-{0}', parameters('name'))]",
               "location": "[parameters('location')]",
               "resourceName": "[parameters('name')]",
+              "suffix": "api",
               "gitHubBranchName": "[parameters('gitHubBranchName')]",
               "storageContainerName": "[parameters('storageContainerName')]",
               "containerGroupName": "[format('contgrp-{0}', parameters('name'))]",
@@ -1279,6 +1280,10 @@
                   {
                     "name": "AZ_RESOURCE_NAME",
                     "value": "[variables('deploymentScript').resourceName]"
+                  },
+                  {
+                    "name": "AZ_RESOURCE_SUFFIX",
+                    "value": "[variables('deploymentScript').suffix]"
                   },
                   {
                     "name": "GH_BRANCH_NAME",
