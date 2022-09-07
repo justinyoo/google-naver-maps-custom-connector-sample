@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "684577367541804681"
+      "templateHash": "417646265593519016"
     }
   },
   "parameters": {
@@ -70,7 +70,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "5385966361069423527"
+              "templateHash": "9193127396168659144"
             }
           },
           "parameters": {
@@ -133,7 +133,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "8037749835003271508"
+                      "templateHash": "179153714164789603"
                     }
                   },
                   "parameters": {
@@ -171,7 +171,7 @@
                       }
                     },
                     {
-                      "condition": "[not(equals(variables('storage').blobContainer, ''))]",
+                      "condition": "[greater(length(variables('storage').blobContainer), 0)]",
                       "type": "Microsoft.Storage/storageAccounts/blobServices",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/default', variables('storage').name)]",
@@ -205,7 +205,7 @@
                       ]
                     },
                     {
-                      "condition": "[not(equals(variables('storage').blobContainer, ''))]",
+                      "condition": "[greater(length(variables('storage').blobContainer), 0)]",
                       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/{1}', format('{0}/default', variables('storage').name), variables('storage').blobContainer)]",
@@ -615,7 +615,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "15742747578276130935"
+              "templateHash": "9183572448031849966"
             }
           },
           "parameters": {
@@ -652,7 +652,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "8037749835003271508"
+                      "templateHash": "179153714164789603"
                     }
                   },
                   "parameters": {
@@ -690,7 +690,7 @@
                       }
                     },
                     {
-                      "condition": "[not(equals(variables('storage').blobContainer, ''))]",
+                      "condition": "[greater(length(variables('storage').blobContainer), 0)]",
                       "type": "Microsoft.Storage/storageAccounts/blobServices",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/default', variables('storage').name)]",
@@ -724,7 +724,7 @@
                       ]
                     },
                     {
-                      "condition": "[not(equals(variables('storage').blobContainer, ''))]",
+                      "condition": "[greater(length(variables('storage').blobContainer), 0)]",
                       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/{1}', format('{0}/default', variables('storage').name), variables('storage').blobContainer)]",
