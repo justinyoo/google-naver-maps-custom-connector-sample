@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "2106697162969619407"
+      "templateHash": "5817942212376213644"
     }
   },
   "parameters": {
@@ -1198,7 +1198,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "14933486951890669580"
+              "templateHash": "8304603040209903772"
             }
           },
           "parameters": {
@@ -1235,7 +1235,7 @@
               "storageContainerName": "[parameters('storageContainerName')]",
               "containerGroupName": "[format('contgrp-{0}', parameters('name'))]",
               "azureCliVersion": "2.37.0",
-              "scriptUri": "[format('https://raw.githubusercontent.com/justinyoo/azure-event-grid-cloudevents-sample/{0}/Resources/setup-resources.sh', parameters('gitHubBranchName'))]"
+              "scriptUri": "[format('https://raw.githubusercontent.com/justinyoo/google-naver-maps-custom-connector-sample/{0}/Resources/setup-resources.sh', parameters('gitHubBranchName'))]"
             }
           },
           "resources": [

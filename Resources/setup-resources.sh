@@ -3,7 +3,7 @@
 set -e
 
 urls=$(curl -H "Accept: application/vnd.github.v3+json" \
-    https://api.github.com/repos/justinyoo/azure-event-grid-cloudevents-sample/releases/latest | \
+    https://api.github.com/repos/justinyoo/google-naver-maps-custom-connector-sample/releases/latest | \
     jq '[.assets[] | .browser_download_url]')
 
 resource_group="rg-$AZ_RESOURCE_NAME"

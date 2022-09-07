@@ -38,7 +38,7 @@ var deploymentScript = {
     storageContainerName: storageContainerName
     containerGroupName: 'contgrp-${name}'
     azureCliVersion: '2.37.0'
-    scriptUri: 'https://raw.githubusercontent.com/justinyoo/azure-event-grid-cloudevents-sample/${gitHubBranchName}/Resources/setup-resources.sh'
+    scriptUri: 'https://raw.githubusercontent.com/justinyoo/google-naver-maps-custom-connector-sample/${gitHubBranchName}/Resources/setup-resources.sh'
 }
 
 resource ds 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
