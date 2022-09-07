@@ -27,6 +27,7 @@ module fncapp './provision-functionApp.bicep' = {
   params: {
     name: name
     location: location
+    storageContainerName: storageContainerName
   }
 }
 

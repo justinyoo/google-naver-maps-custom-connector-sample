@@ -1,6 +1,8 @@
 param name string
 param location string = resourceGroup().location
 
+param storageContainerName string
+
 var shortname = '${name}fnc'
 var longname = '${name}-fnc'
 
@@ -9,6 +11,7 @@ module st './storageAccount.bicep' = {
     params: {
         name: shortname
         location: location
+        storageContainerName: storageContainerName
     }
 }
 

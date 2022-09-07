@@ -1,7 +1,7 @@
 param name string
 param location string = resourceGroup().location
 
-param storageContainerName string = ''
+param storageContainerName string
 
 var storage = {
   name: 'st${name}'
@@ -21,7 +21,7 @@ resource st 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
-resource stblob 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = if (length(storage.blobContainer) > 0) {
+resource stblob 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = {
   name: '${st.name}/default'
   properties: {
     deleteRetentionPolicy: {
@@ -50,7 +50,7 @@ resource stblob 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = if
   }
 }
 
-resource stblobcontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-06-01' = if (length(storage.blobContainer) > 0) {
+resource stblobcontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-06-01' = {
   name: '${stblob.name}/${storage.blobContainer}'
   properties: {
     immutableStorageWithVersioning: {
