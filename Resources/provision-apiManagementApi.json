@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "5067375105550866242"
+      "templateHash": "15916431536362352507"
     }
   },
   "parameters": {
@@ -70,10 +70,6 @@
     "apiMgmtApiPolicyValue": {
       "type": "string",
       "defaultValue": "<!--\r\n  IMPORTANT:\r\n  - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n  - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n  - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n  - To add a policy, place the cursor at the desired insertion point and select a policy from the sidebar.\r\n  - To remove a policy, delete the corresponding policy statement from the policy document.\r\n  - Position the <base> element within a section element to inherit all policies from the corresponding section element in the enclosing scope.\r\n  - Remove the <base> element to prevent inheriting policies from the corresponding section element in the enclosing scope.\r\n  - Policies are applied in the order of their appearance, from the top down.\r\n  - Comments within policy elements are not supported and may disappear. Place your comments between policy elements or at a higher level scope.\r\n-->\r\n<policies>\r\n  <inbound>\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>"
-    },
-    "apiMgmtProductName": {
-      "type": "string",
-      "defaultValue": "default"
     }
   },
   "resources": [
@@ -125,9 +121,6 @@
           },
           "apiMgmtApiPolicyValue": {
             "value": "[parameters('apiMgmtApiPolicyValue')]"
-          },
-          "apiMgmtProductName": {
-            "value": "[parameters('apiMgmtProductName')]"
           }
         },
         "template": {
@@ -137,7 +130,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "2079430032601695804"
+              "templateHash": "5492001066308810608"
             }
           },
           "parameters": {
@@ -158,13 +151,7 @@
               "type": "secureString"
             },
             "apiMgmtApiName": {
-              "type": "string",
-              "allowedValues": [
-                "http",
-                "soap",
-                "websocket",
-                "graphql"
-              ]
+              "type": "string"
             },
             "apiMgmtApiDisplayName": {
               "type": "string"
@@ -208,10 +195,6 @@
             "apiMgmtApiPolicyValue": {
               "type": "string",
               "defaultValue": "<!--\r\n  IMPORTANT:\r\n  - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n  - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n  - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n  - To add a policy, place the cursor at the desired insertion point and select a policy from the sidebar.\r\n  - To remove a policy, delete the corresponding policy statement from the policy document.\r\n  - Position the <base> element within a section element to inherit all policies from the corresponding section element in the enclosing scope.\r\n  - Remove the <base> element to prevent inheriting policies from the corresponding section element in the enclosing scope.\r\n  - Policies are applied in the order of their appearance, from the top down.\r\n  - Comments within policy elements are not supported and may disappear. Place your comments between policy elements or at a higher level scope.\r\n-->\r\n<policies>\r\n  <inbound>\r\n  <base />\r\n  </inbound>\r\n  <backend>\r\n  <base />\r\n  </backend>\r\n  <outbound>\r\n  <base />\r\n  </outbound>\r\n  <on-error>\r\n  <base />\r\n  </on-error>\r\n</policies>"
-            },
-            "apiMgmtProductName": {
-              "type": "string",
-              "defaultValue": "default"
             }
           },
           "variables": {
@@ -232,7 +215,7 @@
               "value": "[parameters('apiMgmtApiValue')]",
               "policyFormat": "[parameters('apiMgmtApiPolicyFormat')]",
               "policyValue": "[parameters('apiMgmtApiPolicyValue')]",
-              "productName": "[parameters('apiMgmtProductName')]"
+              "productName": "default"
             },
             "operations": [
               {
