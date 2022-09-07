@@ -52,7 +52,7 @@ namespace MapsCustomConnector
         [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "image/png", bodyType: typeof(byte[]), Description = "The OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "maps/naver")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "naver")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
