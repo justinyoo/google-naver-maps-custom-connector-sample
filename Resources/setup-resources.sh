@@ -63,9 +63,17 @@ swaggerjson="$api_name.json"
 echo $swaggerdoc | jq 'del(.paths."/openapi/v2.json") |
                        del(.paths."/openapi/v3.json") |
                        del(.paths."/swagger.json") |
-                       del(.paths."/swagger/ui")' > $swaggerjson
+                       del(.paths."/swagger/ui") |
+                       del(.securityDefinitions) |
+                       del(.security)' > $swaggerjson
 
 # Upload swagger.json to Azure Blob
 st_container_name="$ST_CONTAINER_NAME"
 st_connstring=$(az storage account show-connection-string -g $resource_group -n $st_name --query "connectionString" -o tsv)
 blob_updated=$(az storage blob upload --connection-string $st_connstring -f $swaggerjson -c $st_container_name -n "$swaggerjson" --overwrite)
+
+# Update app settings on Function app through GitHub Actions workflow
+dispatched=$(curl -H "Accept: application/vnd.github.v3+json" \
+    -H "Authorization: Bearer $GH_ACCESS_TOKEN" \
+    https://api.github.com/repos/justinyoo/google-naver-maps-custom-connector-sample/actions/workflows/release-azure.yaml/dispatches \
+    -d "{ \"resource_name\": \"$AZ_RESOURCE_NAME\", \"resource_suffix\": \"$AZ_RESOURCE_SUFFIX\" }")

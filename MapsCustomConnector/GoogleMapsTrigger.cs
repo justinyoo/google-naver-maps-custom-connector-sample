@@ -47,23 +47,24 @@ namespace MapsCustomConnector
         /// <returns>Returns <see cref="FileContentResult"/> as the <c>image/png</c> format.</returns>
         [FunctionName(nameof(GoogleMapsTrigger))]
         [OpenApiOperation(operationId: "GetGoogleMap", tags: new[] { "maps" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiParameter(name: "lat", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **latitude** parameter")]
         [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "image/png", bodyType: typeof(byte[]), Description = "The OK response")]
+        [OpenApiParameter(name: "zoom", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "The **zoom level** parameter &ndash; Default value is `14`")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "image/png", bodyType: typeof(byte[]), Description = "The map image as an OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "google")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "google")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var latitude = req.Query["lat"];
             var longitude = req.Query["long"];
+            var zoom = (string)req.Query["zoom"] ?? "14";
 
             var sb = new StringBuilder();
             sb.Append("https://maps.googleapis.com/maps/api/staticmap")
               .Append($"?center={latitude},{longitude}")
               .Append("&size=400x400")
-              .Append("&zoom=14")
+              .Append($"&zoom={zoom}")
               .Append($"&markers=color:red|{latitude},{longitude}")
               .Append("&format=png32")
               .Append($"&key={this._settings.Google.ApiKey}");

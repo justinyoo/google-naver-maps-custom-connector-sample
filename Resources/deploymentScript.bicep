@@ -1,8 +1,10 @@
 param name string
 param location string = resourceGroup().location
 
-param gitHubBranchName string = 'main'
 param storageContainerName string
+param gitHubBranchName string = 'main'
+@secure()
+param gitHubAccessToken string
 
 var userAssignedIdentity = {
     name: 'spn-${name}'
@@ -35,8 +37,9 @@ var deploymentScript = {
     location: location
     resourceName: name
     suffix: 'api'
-    gitHubBranchName: gitHubBranchName
     storageContainerName: storageContainerName
+    gitHubBranchName: gitHubBranchName
+    gitHubAccessToken: gitHubAccessToken
     containerGroupName: 'contgrp-${name}'
     azureCliVersion: '2.37.0'
     scriptUri: 'https://raw.githubusercontent.com/justinyoo/google-naver-maps-custom-connector-sample/${gitHubBranchName}/Resources/setup-resources.sh'
@@ -70,12 +73,16 @@ resource ds 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
                 value: deploymentScript.suffix
             }
             {
+                name: 'ST_CONTAINER_NAME'
+                value: deploymentScript.storageContainerName
+            }
+            {
                 name: 'GH_BRANCH_NAME'
                 value: deploymentScript.gitHubBranchName
             }
             {
-                name: 'ST_CONTAINER_NAME'
-                value: deploymentScript.storageContainerName
+                name: 'GH_ACCESS_TOKEN'
+                value: deploymentScript.gitHubAccessToken
             }
         ]
         primaryScriptUri: deploymentScript.scriptUri

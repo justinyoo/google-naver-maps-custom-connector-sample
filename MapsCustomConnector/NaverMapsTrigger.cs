@@ -47,24 +47,25 @@ namespace MapsCustomConnector
         /// <returns>Returns <see cref="FileContentResult"/> as the <c>image/png</c> format.</returns>
         [FunctionName(nameof(NaverMapsTrigger))]
         [OpenApiOperation(operationId: "GetNaverMap", tags: new[] { "maps" })]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
         [OpenApiParameter(name: "lat", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **latitude** parameter")]
         [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "image/png", bodyType: typeof(byte[]), Description = "The OK response")]
+        [OpenApiParameter(name: "zoom", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "The **zoom level** parameter &ndash; Default value is `13`")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "image/png", bodyType: typeof(byte[]), Description = "The map image as an OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "GET", Route = "naver")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "naver")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var latitude = req.Query["lat"];
             var longitude = req.Query["long"];
+            var zoom = (string)req.Query["zoom"] ?? "13";
 
             var sb = new StringBuilder();
             sb.Append("https://naveropenapi.apigw.ntruss.com/map-static/v2/raster")
               .Append($"?center={longitude},{latitude}")
               .Append("&w=400")
               .Append("&h=400")
-              .Append("&level=13")
+              .Append($"&level={zoom}")
               .Append($"&markers=color:blue|pos:{longitude}%20{latitude}")
               .Append("&format=png")
               .Append("&lang=en");

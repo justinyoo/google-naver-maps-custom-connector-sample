@@ -5,6 +5,8 @@ param apiMgmtPublisherName string
 param apiMgmtPublisherEmail string
 param storageContainerName string
 param gitHubBranchName string = 'main'
+@secure()
+param gitHubAccessToken string
 
 module apim './provision-apiManagement.bicep' = {
   name: 'ApiManagement'
@@ -42,5 +44,6 @@ module depscrpt './deploymentScript.bicep' = {
     location: location
     gitHubBranchName: gitHubBranchName
     storageContainerName: storageContainerName
+    gitHubAccessToken: gitHubAccessToken
   }
 }

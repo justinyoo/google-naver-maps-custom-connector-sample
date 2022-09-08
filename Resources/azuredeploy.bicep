@@ -5,9 +5,10 @@ param location string = 'Korea Central'
 
 param apiManagementPublisherName string
 param apiManagementPublisherEmail string
-param gitHubBranchName string = 'main'
-
 var storageContainerName = 'openapis'
+param gitHubBranchName string = 'main'
+@secure()
+param gitHubAccessToken string
 
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
     name: 'rg-${name}'
@@ -24,5 +25,6 @@ module resources './main.bicep' = {
         apiMgmtPublisherEmail: apiManagementPublisherEmail
         storageContainerName: storageContainerName
         gitHubBranchName: gitHubBranchName
+        gitHubAccessToken: gitHubAccessToken
     }
 }

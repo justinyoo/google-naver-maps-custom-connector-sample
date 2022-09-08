@@ -1,0 +1,89 @@
+name: Deploy to Azure
+
+on:
+  workflow_call:
+    inputs:
+      artifact_name:
+        type: string
+        required: false
+        description: Artifact name of the function app
+        default: fncapp
+      resource_name:
+        type: string
+        required: true
+        description: Azure resource name
+      resource_suffix:
+        type: string
+        required: false
+        description: Azure resource suffix
+        default: 'api'
+      do_not_deploy:
+        type: string
+        required: false
+        description: Azure resource suffix
+        default: 'false'
+
+env:
+  AZURE_RESOURCE_GROUP_NAME: 'rg-${{ inputs.resource_name }}'
+
+jobs:
+  deploy_azure:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Function app artifacts
+      if: inputs.do_not_deploy == "false"
+      uses: actions/download-artifact@v3
+      with:
+        path: ${{ github.workspace }}/published
+
+    - name: Set function app names
+      shell: pwsh
+      run: |
+        $name = 'fncapp-${{ inputs.resource_name }}-${{ inputs.resource_suffix }}'
+
+        echo "AZURE_FUNCTION_APP_NAME=$name" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
+
+    - name: Zip Function app artifacts
+      if: inputs.do_not_deploy == "false"
+      shell: pwsh
+      run: |
+        $destination_path = "published/fncapp.zip"
+
+        Compress-Archive -Path published/${{ inputs.artifact_name }}/* -DestinationPath $destination_path
+
+        echo "AZURE_FUNCTION_APP_PATH=$destination_path" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
+
+    - name: Sign in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy FunctionApp artifact to Azure
+      if: inputs.do_not_deploy == "false"
+      shell: bash
+      run: |
+        az functionapp deploy \
+          -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+          -n ${{ env.AZURE_FUNCTION_APP_NAME }} \
+          --src-path ${{ env.AZURE_FUNCTION_APP_PATH }} \
+          --type zip \
+          --verbose
+
+    - name: Update app settings on FunctionApp
+      shell: bash
+      run: |
+        appsettings_googlemaps_apikey=$(az functionapp config appsettings set \
+          -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+          -n ${{ env.AZURE_FUNCTION_APP_NAME }} \
+          --settings Maps__Google__ApiKey=${{ secrets.MAPS_GOOGLE_APIKEY }})
+
+        appsettings_navermap_clientid=$(az functionapp config appsettings set \
+          -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+          -n ${{ env.AZURE_FUNCTION_APP_NAME }} \
+          --settings Maps__Naver__ClientId=${{ secrets.MAPS_NAVER_CLIENTID }})
+
+        appsettings_navermap_clientsecret=$(az functionapp config appsettings set \
+          -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+          -n ${{ env.AZURE_FUNCTION_APP_NAME }} \
+          --settings Maps__Naver__ClientSecret=${{ secrets.MAPS_NAVER_CLIENTSECRET }})
