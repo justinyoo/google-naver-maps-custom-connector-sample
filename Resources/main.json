@@ -1,0 +1,1315 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.9.1.41621",
+      "templateHash": "15733216027179871647"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "apiMgmtPublisherName": {
+      "type": "string"
+    },
+    "apiMgmtPublisherEmail": {
+      "type": "string"
+    },
+    "storageContainerName": {
+      "type": "string"
+    },
+    "gitHubBranchName": {
+      "type": "string",
+      "defaultValue": "main"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "ApiManagement",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "storageContainerName": {
+            "value": "[parameters('storageContainerName')]"
+          },
+          "apiMgmtPublisherEmail": {
+            "value": "[parameters('apiMgmtPublisherEmail')]"
+          },
+          "apiMgmtPublisherName": {
+            "value": "[parameters('apiMgmtPublisherName')]"
+          },
+          "apiMgmtPolicyFormat": {
+            "value": "xml-link"
+          },
+          "apiMgmtPolicyValue": {
+            "value": "[format('https://raw.githubusercontent.com/justinyoo/google-naver-maps-custom-connector-sample/{0}/Resources/apim-global-policy.xml', parameters('gitHubBranchName'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.9.1.41621",
+              "templateHash": "10441016938421721299"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "storageContainerName": {
+              "type": "string"
+            },
+            "apiMgmtPublisherName": {
+              "type": "string"
+            },
+            "apiMgmtPublisherEmail": {
+              "type": "string"
+            },
+            "apiMgmtPolicyFormat": {
+              "type": "string",
+              "defaultValue": "xml",
+              "allowedValues": [
+                "rawxml",
+                "rawxml-link",
+                "xml",
+                "xml-link"
+              ]
+            },
+            "apiMgmtPolicyValue": {
+              "type": "string",
+              "defaultValue": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - Only the <forward-request> policy element can appear within the <backend> section element.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy position the cursor at the desired insertion point and click on the round button associated with the policy.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n-->\r\n<policies>\r\n  <inbound></inbound>\r\n  <backend>\r\n    <forward-request />\r\n  </backend>\r\n  <outbound></outbound>\r\n</policies>"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "StorageAccount_APIM",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "storageContainerName": {
+                    "value": "[parameters('storageContainerName')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "16189388811005915400"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    },
+                    "storageContainerName": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "storage": {
+                      "name": "[format('st{0}', parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "blobContainer": "[parameters('storageContainerName')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Storage/storageAccounts",
+                      "apiVersion": "2021-06-01",
+                      "name": "[variables('storage').name]",
+                      "location": "[variables('storage').location]",
+                      "kind": "StorageV2",
+                      "sku": {
+                        "name": "Standard_LRS"
+                      },
+                      "properties": {
+                        "supportsHttpsTrafficOnly": true
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Storage/storageAccounts/blobServices",
+                      "apiVersion": "2021-06-01",
+                      "name": "[format('{0}/default', variables('storage').name)]",
+                      "properties": {
+                        "deleteRetentionPolicy": {
+                          "enabled": false
+                        },
+                        "cors": {
+                          "corsRules": [
+                            {
+                              "allowedOrigins": [
+                                "https://make.powerapps.com",
+                                "https://make.powerautomate.com"
+                              ],
+                              "allowedMethods": [
+                                "GET"
+                              ],
+                              "allowedHeaders": [
+                                "*"
+                              ],
+                              "exposedHeaders": [
+                                "*"
+                              ],
+                              "maxAgeInSeconds": 0
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('storage').name)]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+                      "apiVersion": "2021-06-01",
+                      "name": "[format('{0}/{1}', format('{0}/default', variables('storage').name), variables('storage').blobContainer)]",
+                      "properties": {
+                        "immutableStorageWithVersioning": {
+                          "enabled": false
+                        },
+                        "defaultEncryptionScope": "$account-encryption-key",
+                        "denyEncryptionScopeOverride": false,
+                        "publicAccess": "Blob"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', split(format('{0}/default', variables('storage').name), '/')[0], split(format('{0}/default', variables('storage').name), '/')[1])]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Storage/storageAccounts', variables('storage').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('storage').name]"
+                    },
+                    "connectionString": {
+                      "type": "string",
+                      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storage').name, environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').name), '2021-06-01').keys[0].value)]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "LogAnalyticsWorkspace_APIM",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "3448718705695124988"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    }
+                  },
+                  "variables": {
+                    "workspace": {
+                      "name": "[format('wrkspc-{0}', parameters('name'))]",
+                      "location": "[parameters('location')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.OperationalInsights/workspaces",
+                      "apiVersion": "2021-06-01",
+                      "name": "[variables('workspace').name]",
+                      "location": "[variables('workspace').location]",
+                      "properties": {
+                        "sku": {
+                          "name": "PerGB2018"
+                        },
+                        "retentionInDays": 30,
+                        "workspaceCapping": {
+                          "dailyQuotaGb": -1
+                        },
+                        "publicNetworkAccessForIngestion": "Enabled",
+                        "publicNetworkAccessForQuery": "Enabled"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspace').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('workspace').name]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "ApplicationInsights_APIM",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "workspaceId": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'LogAnalyticsWorkspace_APIM')).outputs.id.value]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "7872752548019562034"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    },
+                    "workspaceId": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "workspace": {
+                      "id": "[parameters('workspaceId')]"
+                    },
+                    "appInsights": {
+                      "name": "[format('appins-{0}', parameters('name'))]",
+                      "location": "[parameters('location')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Insights/components",
+                      "apiVersion": "2020-02-02",
+                      "name": "[variables('appInsights').name]",
+                      "location": "[variables('appInsights').location]",
+                      "kind": "web",
+                      "properties": {
+                        "Application_Type": "web",
+                        "Flow_Type": "Bluefield",
+                        "IngestionMode": "LogAnalytics",
+                        "Request_Source": "rest",
+                        "WorkspaceResourceId": "[variables('workspace').id]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Insights/components', variables('appInsights').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('appInsights').name]"
+                    },
+                    "instrumentationKey": {
+                      "type": "string",
+                      "value": "[reference(resourceId('Microsoft.Insights/components', variables('appInsights').name)).InstrumentationKey]"
+                    },
+                    "connectionString": {
+                      "type": "string",
+                      "value": "[reference(resourceId('Microsoft.Insights/components', variables('appInsights').name)).ConnectionString]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'LogAnalyticsWorkspace_APIM')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "ApiManagement_APIM",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('name')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "appInsightsId": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'ApplicationInsights_APIM')).outputs.id.value]"
+                  },
+                  "appInsightsInstrumentationKey": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'ApplicationInsights_APIM')).outputs.instrumentationKey.value]"
+                  },
+                  "apiMgmtPublisherName": {
+                    "value": "[parameters('apiMgmtPublisherName')]"
+                  },
+                  "apiMgmtPublisherEmail": {
+                    "value": "[parameters('apiMgmtPublisherEmail')]"
+                  },
+                  "apiMgmtPolicyFormat": {
+                    "value": "[parameters('apiMgmtPolicyFormat')]"
+                  },
+                  "apiMgmtPolicyValue": {
+                    "value": "[parameters('apiMgmtPolicyValue')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "14611466106788183427"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    },
+                    "appInsightsId": {
+                      "type": "string"
+                    },
+                    "appInsightsInstrumentationKey": {
+                      "type": "secureString"
+                    },
+                    "apiMgmtPublisherName": {
+                      "type": "string"
+                    },
+                    "apiMgmtPublisherEmail": {
+                      "type": "string"
+                    },
+                    "apiMgmtPolicyFormat": {
+                      "type": "string",
+                      "defaultValue": "xml",
+                      "allowedValues": [
+                        "rawxml",
+                        "rawxml-link",
+                        "xml",
+                        "xml-link"
+                      ]
+                    },
+                    "apiMgmtPolicyValue": {
+                      "type": "string",
+                      "defaultValue": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - Only the <forward-request> policy element can appear within the <backend> section element.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy position the cursor at the desired insertion point and click on the round button associated with the policy.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n-->\r\n<policies>\r\n  <inbound></inbound>\r\n  <backend>\r\n    <forward-request />\r\n  </backend>\r\n  <outbound></outbound>\r\n</policies>"
+                    }
+                  },
+                  "variables": {
+                    "appInsights": {
+                      "id": "[parameters('appInsightsId')]",
+                      "name": "[format('appins-{0}', parameters('name'))]",
+                      "instrumentationKey": "[parameters('appInsightsInstrumentationKey')]"
+                    },
+                    "apiManagement": {
+                      "name": "[format('apim-{0}', parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "skuName": "Consumption",
+                      "skuCapacity": 0,
+                      "publisherName": "[parameters('apiMgmtPublisherName')]",
+                      "publisherEmail": "[parameters('apiMgmtPublisherEmail')]",
+                      "policyFormat": "[parameters('apiMgmtPolicyFormat')]",
+                      "policyValue": "[parameters('apiMgmtPolicyValue')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.ApiManagement/service",
+                      "apiVersion": "2021-08-01",
+                      "name": "[variables('apiManagement').name]",
+                      "location": "[variables('apiManagement').location]",
+                      "sku": {
+                        "name": "[variables('apiManagement').skuName]",
+                        "capacity": "[variables('apiManagement').skuCapacity]"
+                      },
+                      "properties": {
+                        "publisherName": "[variables('apiManagement').publisherName]",
+                        "publisherEmail": "[variables('apiManagement').publisherEmail]"
+                      }
+                    },
+                    {
+                      "type": "Microsoft.ApiManagement/service/namedValues",
+                      "apiVersion": "2021-08-01",
+                      "name": "[format('{0}/RESOURCE_NAME', variables('apiManagement').name)]",
+                      "properties": {
+                        "displayName": "RESOURCE_NAME",
+                        "secret": true,
+                        "value": "[variables('apiManagement').name]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ApiManagement/service', variables('apiManagement').name)]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.ApiManagement/service/loggers",
+                      "apiVersion": "2021-08-01",
+                      "name": "[format('{0}/{1}', variables('apiManagement').name, variables('appInsights').name)]",
+                      "properties": {
+                        "loggerType": "applicationInsights",
+                        "resourceId": "[variables('appInsights').id]",
+                        "credentials": {
+                          "instrumentationKey": "[variables('appInsights').instrumentationKey]"
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ApiManagement/service', variables('apiManagement').name)]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.ApiManagement/service/policies",
+                      "apiVersion": "2021-08-01",
+                      "name": "[format('{0}/policy', variables('apiManagement').name)]",
+                      "properties": {
+                        "format": "[variables('apiManagement').policyFormat]",
+                        "value": "[variables('apiManagement').policyValue]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ApiManagement/service', variables('apiManagement').name)]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.ApiManagement/service/products",
+                      "apiVersion": "2021-08-01",
+                      "name": "[format('{0}/default', variables('apiManagement').name)]",
+                      "properties": {
+                        "displayName": "Default Product",
+                        "description": "This is the default product created by the template, which includes all APIs.",
+                        "state": "published",
+                        "subscriptionRequired": false
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ApiManagement/service', variables('apiManagement').name)]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.ApiManagement/service', variables('apiManagement').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('apiManagement').name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'ApplicationInsights_APIM')]"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "FunctionApp",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "storageContainerName": {
+            "value": "[parameters('storageContainerName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.9.1.41621",
+              "templateHash": "1475703592142349075"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "storageContainerName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "shortname": "[format('{0}api', parameters('name'))]",
+            "longname": "[format('{0}-api', parameters('name'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "StorageAccount_FunctionApp",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[variables('shortname')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "storageContainerName": {
+                    "value": "[parameters('storageContainerName')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "16189388811005915400"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    },
+                    "storageContainerName": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "storage": {
+                      "name": "[format('st{0}', parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "blobContainer": "[parameters('storageContainerName')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Storage/storageAccounts",
+                      "apiVersion": "2021-06-01",
+                      "name": "[variables('storage').name]",
+                      "location": "[variables('storage').location]",
+                      "kind": "StorageV2",
+                      "sku": {
+                        "name": "Standard_LRS"
+                      },
+                      "properties": {
+                        "supportsHttpsTrafficOnly": true
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Storage/storageAccounts/blobServices",
+                      "apiVersion": "2021-06-01",
+                      "name": "[format('{0}/default', variables('storage').name)]",
+                      "properties": {
+                        "deleteRetentionPolicy": {
+                          "enabled": false
+                        },
+                        "cors": {
+                          "corsRules": [
+                            {
+                              "allowedOrigins": [
+                                "https://make.powerapps.com",
+                                "https://make.powerautomate.com"
+                              ],
+                              "allowedMethods": [
+                                "GET"
+                              ],
+                              "allowedHeaders": [
+                                "*"
+                              ],
+                              "exposedHeaders": [
+                                "*"
+                              ],
+                              "maxAgeInSeconds": 0
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('storage').name)]"
+                      ]
+                    },
+                    {
+                      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+                      "apiVersion": "2021-06-01",
+                      "name": "[format('{0}/{1}', format('{0}/default', variables('storage').name), variables('storage').blobContainer)]",
+                      "properties": {
+                        "immutableStorageWithVersioning": {
+                          "enabled": false
+                        },
+                        "defaultEncryptionScope": "$account-encryption-key",
+                        "denyEncryptionScopeOverride": false,
+                        "publicAccess": "Blob"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', split(format('{0}/default', variables('storage').name), '/')[0], split(format('{0}/default', variables('storage').name), '/')[1])]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Storage/storageAccounts', variables('storage').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('storage').name]"
+                    },
+                    "connectionString": {
+                      "type": "string",
+                      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storage').name, environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storage').name), '2021-06-01').keys[0].value)]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "LogAnalyticsWorkspace_FunctionApp",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[variables('longname')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "3448718705695124988"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    }
+                  },
+                  "variables": {
+                    "workspace": {
+                      "name": "[format('wrkspc-{0}', parameters('name'))]",
+                      "location": "[parameters('location')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.OperationalInsights/workspaces",
+                      "apiVersion": "2021-06-01",
+                      "name": "[variables('workspace').name]",
+                      "location": "[variables('workspace').location]",
+                      "properties": {
+                        "sku": {
+                          "name": "PerGB2018"
+                        },
+                        "retentionInDays": 30,
+                        "workspaceCapping": {
+                          "dailyQuotaGb": -1
+                        },
+                        "publicNetworkAccessForIngestion": "Enabled",
+                        "publicNetworkAccessForQuery": "Enabled"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspace').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('workspace').name]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "ApplicationInsights_FunctionApp",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[variables('longname')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "workspaceId": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'LogAnalyticsWorkspace_FunctionApp')).outputs.id.value]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "7872752548019562034"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    },
+                    "workspaceId": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "workspace": {
+                      "id": "[parameters('workspaceId')]"
+                    },
+                    "appInsights": {
+                      "name": "[format('appins-{0}', parameters('name'))]",
+                      "location": "[parameters('location')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Insights/components",
+                      "apiVersion": "2020-02-02",
+                      "name": "[variables('appInsights').name]",
+                      "location": "[variables('appInsights').location]",
+                      "kind": "web",
+                      "properties": {
+                        "Application_Type": "web",
+                        "Flow_Type": "Bluefield",
+                        "IngestionMode": "LogAnalytics",
+                        "Request_Source": "rest",
+                        "WorkspaceResourceId": "[variables('workspace').id]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Insights/components', variables('appInsights').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('appInsights').name]"
+                    },
+                    "instrumentationKey": {
+                      "type": "string",
+                      "value": "[reference(resourceId('Microsoft.Insights/components', variables('appInsights').name)).InstrumentationKey]"
+                    },
+                    "connectionString": {
+                      "type": "string",
+                      "value": "[reference(resourceId('Microsoft.Insights/components', variables('appInsights').name)).ConnectionString]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'LogAnalyticsWorkspace_FunctionApp')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "ConsumptionPlan_FunctionApp",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[variables('longname')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "7655584872176297662"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    }
+                  },
+                  "variables": {
+                    "consumption": {
+                      "name": "[format('csplan-{0}', parameters('name'))]",
+                      "location": "[parameters('location')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Web/serverfarms",
+                      "apiVersion": "2022-03-01",
+                      "name": "[variables('consumption').name]",
+                      "location": "[variables('consumption').location]",
+                      "kind": "functionApp",
+                      "sku": {
+                        "name": "Y1",
+                        "tier": "Dynamic"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Web/serverfarms', variables('consumption').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('consumption').name]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "FunctionApp_FunctionApp",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[variables('longname')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "storageAccountConnectionString": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'StorageAccount_FunctionApp')).outputs.connectionString.value]"
+                  },
+                  "appInsightsInstrumentationKey": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'ApplicationInsights_FunctionApp')).outputs.instrumentationKey.value]"
+                  },
+                  "appInsightsConnectionString": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'ApplicationInsights_FunctionApp')).outputs.connectionString.value]"
+                  },
+                  "consumptionPlanId": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', 'ConsumptionPlan_FunctionApp')).outputs.id.value]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.9.1.41621",
+                      "templateHash": "11721407484986475921"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]"
+                    },
+                    "storageAccountConnectionString": {
+                      "type": "secureString"
+                    },
+                    "consumptionPlanId": {
+                      "type": "string"
+                    },
+                    "appInsightsInstrumentationKey": {
+                      "type": "secureString"
+                    },
+                    "appInsightsConnectionString": {
+                      "type": "secureString"
+                    }
+                  },
+                  "variables": {
+                    "storage": {
+                      "connectionString": "[parameters('storageAccountConnectionString')]"
+                    },
+                    "consumption": {
+                      "id": "[parameters('consumptionPlanId')]"
+                    },
+                    "appInsights": {
+                      "instrumentationKey": "[parameters('appInsightsInstrumentationKey')]",
+                      "connectionString": "[parameters('appInsightsConnectionString')]"
+                    },
+                    "functionApp": {
+                      "name": "[format('fncapp-{0}', parameters('name'))]",
+                      "location": "[parameters('location')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Web/sites",
+                      "apiVersion": "2022-03-01",
+                      "name": "[variables('functionApp').name]",
+                      "location": "[variables('functionApp').location]",
+                      "kind": "functionapp",
+                      "properties": {
+                        "serverFarmId": "[variables('consumption').id]",
+                        "httpsOnly": true,
+                        "siteConfig": {
+                          "appSettings": [
+                            {
+                              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                              "value": "[variables('appInsights').instrumentationKey]"
+                            },
+                            {
+                              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                              "value": "[variables('appInsights').connectionString]"
+                            },
+                            {
+                              "name": "AzureWebJobsStorage",
+                              "value": "[variables('storage').connectionString]"
+                            },
+                            {
+                              "name": "FUNCTION_APP_EDIT_MODE",
+                              "value": "readonly"
+                            },
+                            {
+                              "name": "FUNCTIONS_EXTENSION_VERSION",
+                              "value": "~4"
+                            },
+                            {
+                              "name": "FUNCTIONS_WORKER_RUNTIME",
+                              "value": "dotnet"
+                            },
+                            {
+                              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                              "value": "[variables('storage').connectionString]"
+                            },
+                            {
+                              "name": "WEBSITE_CONTENTSHARE",
+                              "value": "[variables('functionApp').name]"
+                            },
+                            {
+                              "name": "OpenApi__Version",
+                              "value": "v3"
+                            },
+                            {
+                              "name": "OpenApi__DocVersion",
+                              "value": "1.0.0"
+                            },
+                            {
+                              "name": "OpenApi__DocTitle",
+                              "value": "Google Maps, Naver Map API Wrapper"
+                            },
+                            {
+                              "name": "OpenApi__DocDescription",
+                              "value": "This is the proxy API for Google Maps and Naver Maps."
+                            },
+                            {
+                              "name": "OpenApi__HostNames",
+                              "value": "[format('https://{0}.azurewebsites.net/api', variables('functionApp').name)]"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Web/sites', variables('functionApp').name)]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[variables('functionApp').name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'ApplicationInsights_FunctionApp')]",
+                "[resourceId('Microsoft.Resources/deployments', 'ConsumptionPlan_FunctionApp')]",
+                "[resourceId('Microsoft.Resources/deployments', 'StorageAccount_FunctionApp')]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'ApiManagement')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "DeploymentScript",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "gitHubBranchName": {
+            "value": "[parameters('gitHubBranchName')]"
+          },
+          "storageContainerName": {
+            "value": "[parameters('storageContainerName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.9.1.41621",
+              "templateHash": "2398601869878939729"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "gitHubBranchName": {
+              "type": "string",
+              "defaultValue": "main"
+            },
+            "storageContainerName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "userAssignedIdentity": {
+              "name": "[format('spn-{0}', parameters('name'))]",
+              "location": "[parameters('location')]"
+            },
+            "roleAssignment": {
+              "name": "[guid(resourceGroup().id, 'contributor')]",
+              "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "principalType": "ServicePrincipal"
+            },
+            "deploymentScript": {
+              "name": "[format('depscrpt-{0}', parameters('name'))]",
+              "location": "[parameters('location')]",
+              "resourceName": "[parameters('name')]",
+              "suffix": "api",
+              "gitHubBranchName": "[parameters('gitHubBranchName')]",
+              "storageContainerName": "[parameters('storageContainerName')]",
+              "containerGroupName": "[format('contgrp-{0}', parameters('name'))]",
+              "azureCliVersion": "2.37.0",
+              "scriptUri": "[format('https://raw.githubusercontent.com/justinyoo/google-naver-maps-custom-connector-sample/{0}/Resources/setup-resources.sh', parameters('gitHubBranchName'))]"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2022-01-31-preview",
+              "name": "[variables('userAssignedIdentity').name]",
+              "location": "[variables('userAssignedIdentity').location]"
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[variables('roleAssignment').name]",
+              "properties": {
+                "roleDefinitionId": "[variables('roleAssignment').roleDefinitionId]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentity').name)).principalId]",
+                "principalType": "[variables('roleAssignment').principalType]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentity').name)]"
+              ]
+            },
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2020-10-01",
+              "name": "[variables('deploymentScript').name]",
+              "location": "[variables('deploymentScript').location]",
+              "kind": "AzureCLI",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentity').name))]": {}
+                }
+              },
+              "properties": {
+                "azCliVersion": "[variables('deploymentScript').azureCliVersion]",
+                "containerSettings": {
+                  "containerGroupName": "[variables('deploymentScript').containerGroupName]"
+                },
+                "environmentVariables": [
+                  {
+                    "name": "AZ_RESOURCE_NAME",
+                    "value": "[variables('deploymentScript').resourceName]"
+                  },
+                  {
+                    "name": "AZ_RESOURCE_SUFFIX",
+                    "value": "[variables('deploymentScript').suffix]"
+                  },
+                  {
+                    "name": "GH_BRANCH_NAME",
+                    "value": "[variables('deploymentScript').gitHubBranchName]"
+                  },
+                  {
+                    "name": "ST_CONTAINER_NAME",
+                    "value": "[variables('deploymentScript').storageContainerName]"
+                  }
+                ],
+                "primaryScriptUri": "[variables('deploymentScript').scriptUri]",
+                "cleanupPreference": "OnExpiration",
+                "retentionInterval": "P1D"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Authorization/roleAssignments', variables('roleAssignment').name)]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentity').name)]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'ApiManagement')]",
+        "[resourceId('Microsoft.Resources/deployments', 'FunctionApp')]"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+name: Push & Pull Request
+
+on:
+  push:
+    branches:
+    - feature/*
+  pull_request:
+    branches:    
+    - main
+
+jobs:
+  call_build_test:
+    uses: ./.github/workflows/build-test.yaml
