@@ -14,7 +14,6 @@ This provides a sample Azure Functions app to build a custom connector using bot
    * [Naver Map API client secret (optional)](https://api.ncloud-docs.com/docs/en/ai-naver-mapsstaticmap) ➡️ `MAPS_NAVER_CLIENTSECRET`
 
 2. Get your [GitHub Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) ready.
-
 3. Click the button below to autopilot all relevant resources and apps on Azure.
 
    [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjustinyoo%2Fgoogle-naver-maps-custom-connector-sample%2Fmain%2FResources%2Fazuredeploy.json)
@@ -48,3 +47,10 @@ This provides a sample Azure Functions app to build a custom connector using bot
    * `https://st<AZURE_RESOURCE_NAME>.blob.core.windows.net/openapis/maps.json`
 
 7. Build your [Power Platform Custom Connector](https://docs.microsoft.com/connectors/custom-connectors/?WT.mc_id=dotnet-75362-juyoo) with this OpenAPI document URL.
+8. Use the custom connector on either [Power Apps](https://docs.microsoft.com/power-apps/powerapps-overview?WT.mc_id=dotnet-75362-juyoo) or [Power Automate](https://docs.microsoft.com/power-automate/getting-started?WT.mc_id=dotnet-75362-juyoo).
+
+
+## More Readings ##
+
+* [#ServerlessSeptember: Serverless Power Platform Custom Connector for Google Maps and Naver Map](https://azure.github.io/Cloud-Native/blog/to-be-announced)
+* [30 Days of Serverless](https://azure.github.io/Cloud-Native/serverless-september/30DaysOfServerless)
