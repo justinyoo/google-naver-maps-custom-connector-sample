@@ -4,10 +4,6 @@ on:
   push:
     branches:
     - main
-    - 'feature/**'
-    paths:
-    - 'src/**'
-    - 'test/**'
   workflow_dispatch:
     inputs:
       resource_name:

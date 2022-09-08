@@ -3,7 +3,6 @@ name: Push & Pull Request
 on:
   push:
     branches:
-    - main
     - feature/*
   pull_request:
     branches:    
