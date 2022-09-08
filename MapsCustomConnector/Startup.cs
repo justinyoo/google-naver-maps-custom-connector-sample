@@ -1,4 +1,5 @@
 ﻿using MapsCustomConnector.Configs;
+using MapsCustomConnector.Services;
 
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Configurations.AppSettings.Extensions;
@@ -28,6 +29,7 @@ namespace MapsCustomConnector
         {
             ConfigureAppSettings(builder.Services);
             ConfigureClients(builder.Services);
+            ConfigureMapServices(builder.Services);
         }
 
         private static void ConfigureAppSettings(IServiceCollection services)
@@ -42,6 +44,11 @@ namespace MapsCustomConnector
         {
             services.AddHttpClient("google");
             services.AddHttpClient("naver");
+        }
+
+        private static void ConfigureMapServices(IServiceCollection services)
+        {
+            services.AddSingleton<IMapServiceFactory, MapServiceFactory>();
         }
     }
 }

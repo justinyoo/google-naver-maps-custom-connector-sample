@@ -50,7 +50,7 @@ function List-DeletedAPIMs {
 
     $apims = $(az rest -m get -u $url --query "value" | ConvertFrom-Json)
     if ($apims -eq $null) {
-        $options = "No soft-deleted API Management instance found to purge"
+        $options = "All soft-deleted API Management instances purged or no such instance found to purge"
         $returnValue = @{ apims = $apims; options = $options }
         return $returnValue
     }
@@ -125,7 +125,7 @@ function Purge-DeletedAPIMs {
     }
 
     if ($continue -eq $false) {
-        return "`n$result.options"
+        return $result.options
     }
 }
 

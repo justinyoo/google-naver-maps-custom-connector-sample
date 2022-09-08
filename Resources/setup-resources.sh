@@ -14,6 +14,14 @@ fncapp_zip=$(echo $urls | jq --argjson value 0 '.[$value]' -r)
 fncapp=$(az functionapp deploy -g $resource_group -n $fncapp_name --src-url $fncapp_zip --type zip)
 fncapp_url="https://$fncapp_name.azurewebsites.net/api/openapi/v3.json"
 
+ping=$(curl -fsS $fncapp_url > /dev/null && echo "OK")
+while [ $ping != "OK" ];
+do
+    echo "Waiting for Function app to be ready..."
+    sleep 10
+    ping=$(curl -fsS $fncapp_url > /dev/null && echo "OK")
+done
+
 # Provision APIs to APIM
 apim_name="apim-$AZ_RESOURCE_NAME"
 bicep_url="https://raw.githubusercontent.com/justinyoo/google-naver-maps-custom-connector-sample/$GH_BRANCH_NAME/Resources/provision-apiManagementApi.json"
@@ -73,7 +81,8 @@ st_connstring=$(az storage account show-connection-string -g $resource_group -n 
 blob_updated=$(az storage blob upload --connection-string $st_connstring -f $swaggerjson -c $st_container_name -n "$swaggerjson" --overwrite)
 
 # Update app settings on Function app through GitHub Actions workflow
-dispatched=$(curl -H "Accept: application/vnd.github.v3+json" \
-    -H "Authorization: Bearer $GH_ACCESS_TOKEN" \
+dispatched=$(curl -H "Accept: application/vnd.github+json" \
+    -H "User-Agent: Autopilot" \
+    -H "Authorization: token $GH_ACCESS_TOKEN" \
     https://api.github.com/repos/justinyoo/google-naver-maps-custom-connector-sample/actions/workflows/release-azure.yaml/dispatches \
-    -d "{ \"resource_name\": \"$AZ_RESOURCE_NAME\", \"resource_suffix\": \"$AZ_RESOURCE_SUFFIX\" }")
+    -d "{ \"ref\": \"main\", \"inputs\": { \"resource_name\": \"$AZ_RESOURCE_NAME\" } }")

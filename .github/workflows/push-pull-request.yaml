@@ -3,11 +3,29 @@ name: Push & Pull Request
 on:
   push:
     branches:
-    - feature/*
+    - main
+    - 'feature/**'
   pull_request:
     branches:    
     - main
 
 jobs:
   call_build_test:
+    if: github.event_name == 'pull_request'
     uses: ./.github/workflows/build-test.yaml
+
+  call_build_test_upload:
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/build-test-upload.yaml
+    secrets: inherit
+    with:
+      artifact_name: fncapp
+
+  call_deployment_azure:
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/deployment-azure.yaml
+    needs:
+    - call_build_test_upload
+    secrets: inherit
+    with:
+      artifact_name: fncapp
