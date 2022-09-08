@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "91335714475896282"
+      "templateHash": "11077130972834020434"
     }
   },
   "parameters": {
@@ -17,17 +17,23 @@
       "defaultValue": "Korea Central"
     },
     "apiManagementPublisherName": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "Maps Proxy API"
     },
     "apiManagementPublisherEmail": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "apim@contoso.com"
     },
     "gitHubBranchName": {
       "type": "string",
       "defaultValue": "main"
+    },
+    "gitHubAccessToken": {
+      "type": "secureString"
     }
   },
   "variables": {
+    "suffix": "api",
     "storageContainerName": "openapis"
   },
   "resources": [
@@ -51,6 +57,9 @@
           "name": {
             "value": "[parameters('name')]"
           },
+          "suffix": {
+            "value": "[variables('suffix')]"
+          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -65,6 +74,9 @@
           },
           "gitHubBranchName": {
             "value": "[parameters('gitHubBranchName')]"
+          },
+          "gitHubAccessToken": {
+            "value": "[parameters('gitHubAccessToken')]"
           }
         },
         "template": {
@@ -74,12 +86,16 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "15733216027179871647"
+              "templateHash": "2334195421067548480"
             }
           },
           "parameters": {
             "name": {
               "type": "string"
+            },
+            "suffix": {
+              "type": "string",
+              "defaultValue": "api"
             },
             "location": {
               "type": "string",
@@ -97,6 +113,9 @@
             "gitHubBranchName": {
               "type": "string",
               "defaultValue": "main"
+            },
+            "gitHubAccessToken": {
+              "type": "secureString"
             }
           },
           "resources": [
@@ -139,7 +158,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "10441016938421721299"
+                      "templateHash": "13923966010952370198"
                     }
                   },
                   "parameters": {
@@ -202,7 +221,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "16189388811005915400"
+                              "templateHash": "6564597189532115823"
                             }
                           },
                           "parameters": {
@@ -250,6 +269,7 @@
                                   "corsRules": [
                                     {
                                       "allowedOrigins": [
+                                        "https://flow.microsoft.com",
                                         "https://make.powerapps.com",
                                         "https://make.powerautomate.com"
                                       ],
@@ -670,6 +690,9 @@
                   "name": {
                     "value": "[parameters('name')]"
                   },
+                  "suffix": {
+                    "value": "[parameters('suffix')]"
+                  },
                   "location": {
                     "value": "[parameters('location')]"
                   },
@@ -684,12 +707,16 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "1475703592142349075"
+                      "templateHash": "13884155913098213103"
                     }
                   },
                   "parameters": {
                     "name": {
                       "type": "string"
+                    },
+                    "suffix": {
+                      "type": "string",
+                      "defaultValue": "api"
                     },
                     "location": {
                       "type": "string",
@@ -700,8 +727,8 @@
                     }
                   },
                   "variables": {
-                    "shortname": "[format('{0}api', parameters('name'))]",
-                    "longname": "[format('{0}-api', parameters('name'))]"
+                    "shortname": "[format('{0}{1}', parameters('name'), parameters('suffix'))]",
+                    "longname": "[format('{0}-{1}', parameters('name'), parameters('suffix'))]"
                   },
                   "resources": [
                     {
@@ -731,7 +758,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "16189388811005915400"
+                              "templateHash": "6564597189532115823"
                             }
                           },
                           "parameters": {
@@ -779,6 +806,7 @@
                                   "corsRules": [
                                     {
                                       "allowedOrigins": [
+                                        "https://flow.microsoft.com",
                                         "https://make.powerapps.com",
                                         "https://make.powerautomate.com"
                                       ],
@@ -1250,6 +1278,9 @@
                   "name": {
                     "value": "[parameters('name')]"
                   },
+                  "suffix": {
+                    "value": "[parameters('suffix')]"
+                  },
                   "location": {
                     "value": "[parameters('location')]"
                   },
@@ -1258,6 +1289,9 @@
                   },
                   "storageContainerName": {
                     "value": "[parameters('storageContainerName')]"
+                  },
+                  "gitHubAccessToken": {
+                    "value": "[parameters('gitHubAccessToken')]"
                   }
                 },
                 "template": {
@@ -1267,23 +1301,30 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "2398601869878939729"
+                      "templateHash": "308706914779929327"
                     }
                   },
                   "parameters": {
                     "name": {
                       "type": "string"
                     },
+                    "suffix": {
+                      "type": "string",
+                      "defaultValue": "api"
+                    },
                     "location": {
                       "type": "string",
                       "defaultValue": "[resourceGroup().location]"
+                    },
+                    "storageContainerName": {
+                      "type": "string"
                     },
                     "gitHubBranchName": {
                       "type": "string",
                       "defaultValue": "main"
                     },
-                    "storageContainerName": {
-                      "type": "string"
+                    "gitHubAccessToken": {
+                      "type": "secureString"
                     }
                   },
                   "variables": {
@@ -1300,9 +1341,10 @@
                       "name": "[format('depscrpt-{0}', parameters('name'))]",
                       "location": "[parameters('location')]",
                       "resourceName": "[parameters('name')]",
-                      "suffix": "api",
-                      "gitHubBranchName": "[parameters('gitHubBranchName')]",
+                      "suffix": "[parameters('suffix')]",
                       "storageContainerName": "[parameters('storageContainerName')]",
+                      "gitHubBranchName": "[parameters('gitHubBranchName')]",
+                      "gitHubAccessToken": "[parameters('gitHubAccessToken')]",
                       "containerGroupName": "[format('contgrp-{0}', parameters('name'))]",
                       "azureCliVersion": "2.37.0",
                       "scriptUri": "[format('https://raw.githubusercontent.com/justinyoo/google-naver-maps-custom-connector-sample/{0}/Resources/setup-resources.sh', parameters('gitHubBranchName'))]"
@@ -1355,12 +1397,16 @@
                             "value": "[variables('deploymentScript').suffix]"
                           },
                           {
+                            "name": "ST_CONTAINER_NAME",
+                            "value": "[variables('deploymentScript').storageContainerName]"
+                          },
+                          {
                             "name": "GH_BRANCH_NAME",
                             "value": "[variables('deploymentScript').gitHubBranchName]"
                           },
                           {
-                            "name": "ST_CONTAINER_NAME",
-                            "value": "[variables('deploymentScript').storageContainerName]"
+                            "name": "GH_ACCESS_TOKEN",
+                            "value": "[variables('deploymentScript').gitHubAccessToken]"
                           }
                         ],
                         "primaryScriptUri": "[variables('deploymentScript').scriptUri]",

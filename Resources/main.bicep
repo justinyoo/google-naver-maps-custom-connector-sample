@@ -1,4 +1,5 @@
 param name string
+param suffix string = 'api'
 param location string = resourceGroup().location
 
 param apiMgmtPublisherName string
@@ -28,6 +29,7 @@ module fncapp './provision-functionApp.bicep' = {
   ]
   params: {
     name: name
+    suffix: suffix
     location: location
     storageContainerName: storageContainerName
   }
@@ -41,6 +43,7 @@ module depscrpt './deploymentScript.bicep' = {
   ]
   params: {
     name: name
+    suffix: suffix
     location: location
     gitHubBranchName: gitHubBranchName
     storageContainerName: storageContainerName

@@ -1,4 +1,5 @@
 param name string
+param suffix string = 'api'
 param location string = resourceGroup().location
 
 param storageContainerName string
@@ -36,7 +37,7 @@ var deploymentScript = {
     name: 'depscrpt-${name}'
     location: location
     resourceName: name
-    suffix: 'api'
+    suffix: suffix
     storageContainerName: storageContainerName
     gitHubBranchName: gitHubBranchName
     gitHubAccessToken: gitHubAccessToken

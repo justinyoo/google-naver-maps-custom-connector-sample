@@ -7,11 +7,12 @@ on:
         type: string
         required: false
         description: Artifact name of the function app
-        default: fncapp
+        default: 'fncapp'
       resource_name:
         type: string
-        required: true
+        required: false
         description: Azure resource name
+        default: ''
       resource_suffix:
         type: string
         required: false
@@ -25,14 +26,31 @@ on:
 
 env:
   AZURE_RESOURCE_GROUP_NAME: 'rg-${{ inputs.resource_name }}'
+  AZURE_RESOURCE_NAME: ${{ inputs.resource_name }}
+  AZURE_RESOURCE_SUFFIX: ${{ inputs.resource_suffix }}
+  DO_NOT_DEPLOY: ${{ inputs.do_not_deploy }}
 
 jobs:
   deploy_azure:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set up environment variables
+      shell: pwsh
+      run: |
+        if (("${{ env.AZURE_RESOURCE_NAME }}" -eq $null) -or ("${{ env.AZURE_RESOURCE_NAME }}" -eq "")) {
+          echo "AZURE_RESOURCE_GROUP_NAME=rg-${{ secrets.AZURE_RESOURCE_NAME }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
+          echo "AZURE_RESOURCE_NAME=${{ secrets.AZURE_RESOURCE_NAME }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
+        }
+        if (("${{ env.AZURE_RESOURCE_SUFFIX }}" -eq $null) -or ("${{ env.AZURE_RESOURCE_SUFFIX }}" -eq "")) {
+          echo "AZURE_RESOURCE_SUFFIX=${{ secrets.AZURE_RESOURCE_SUFFIX }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
+        }
+        if (("${{ env.DO_NOT_DEPLOY }}" -eq $null) -or ("${{ env.DO_NOT_DEPLOY }}" -eq "")) {
+          echo "DO_NOT_DEPLOY=false" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
+        }
+
     - name: Download Function app artifacts
-      if: inputs.do_not_deploy == "false"
+      if: inputs.do_not_deploy == 'false'
       uses: actions/download-artifact@v3
       with:
         path: ${{ github.workspace }}/published
@@ -40,12 +58,12 @@ jobs:
     - name: Set function app names
       shell: pwsh
       run: |
-        $name = 'fncapp-${{ inputs.resource_name }}-${{ inputs.resource_suffix }}'
+        $name = 'fncapp-${{ env.AZURE_RESOURCE_NAME }}-${{ env.AZURE_RESOURCE_SUFFIX }}'
 
         echo "AZURE_FUNCTION_APP_NAME=$name" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
 
     - name: Zip Function app artifacts
-      if: inputs.do_not_deploy == "false"
+      if: inputs.do_not_deploy == 'false'
       shell: pwsh
       run: |
         $destination_path = "published/fncapp.zip"
@@ -60,7 +78,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Deploy FunctionApp artifact to Azure
-      if: inputs.do_not_deploy == "false"
+      if: inputs.do_not_deploy == 'false'
       shell: bash
       run: |
         az functionapp deploy \

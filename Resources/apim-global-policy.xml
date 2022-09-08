@@ -13,6 +13,7 @@
     <cors allow-credentials="true">
       <allowed-origins>
         <origin>https://{{RESOURCE_NAME}}.azure-api.net</origin>
+        <origin>https://flow.microsoft.com</origin>
         <origin>https://make.powerapps.com</origin>
         <origin>https://make.powerautomate.com</origin>
       </allowed-origins>

@@ -1,61 +1,19 @@
 name: Release to Azure
 
 on:
-  push:
-    branches:
-    - main
   workflow_dispatch:
     inputs:
       resource_name:
         type: string
         required: true
         description: 'Azure resource name'
-      resource_suffix:
-        type: string
-        required: false
-        description: 'Azure resource suffix'
-        default: 'api'
 
 jobs:
-  build_resource_variables:
-    runs-on: ubuntu-latest
-
-    env:
-      RESOURCE_NAME: ${{ secrets.AZURE_RESOURCE_NAME }}
-      RESOURCE_SUFFIX: ${{ secrets.AZURE_RESOURCE_SUFFIX }}
-      DO_NOT_DEPLOY: "false"
-
-    outputs:
-      resource_name: ${{ env.RESOURCE_NAME }}
-      resource_suffix: ${{ env.RESOURCE_SUFFIX }}
-      do_not_deploy: ${{ env.DO_NOT_DEPLOY }}
-
-    steps:
-    - name: Build Azure resource variables from inputs
-      if: github.event_name == 'workflow_dispatch'
-      shell: pwsh
-      run: |
-        $resourceName = ${{ github.event.inputs.resource_name }}
-        $resourceSuffix = ${{ github.event.inputs.resource_suffix }}
-        $doNotDeploy = "true"
-
-        echo "RESOURCE_NAME=$resourceName" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
-        echo "RESOURCE_SUFFIX=$resourceSuffix" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
-        echo "DO_NOT_DEPLOY=$doNotDeploy" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
-
-  call_build_test_upload:
-    uses: ./.github/workflows/build-test-upload.yaml
-    secrets: inherit
-    with:
-      artifact_name: fncapp
-
   call_deployment_azure:
     uses: ./.github/workflows/deployment-azure.yaml
-    needs:
-    - call_build_test_upload
     secrets: inherit
     with:
       artifact_name: fncapp
-      resource_name: ${{ needs.build_resource_variables.outputs.resource_name }}
-      resource_suffix: ${{ needs.build_resource_variables.outputs.resource_suffix }}
-      do_not_deploy: ${{ needs.build_resource_variables.outputs.do_not_deploy }}
+      resource_name: ${{ github.event.inputs.resource_name }}
+      resource_suffix: 'api'
+      do_not_deploy: 'true'

@@ -1,10 +1,10 @@
 using System;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 using MapsCustomConnector.Configs;
+using MapsCustomConnector.Models;
+using MapsCustomConnector.Services;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,56 +22,61 @@ namespace MapsCustomConnector
     /// </summary>
     public class GoogleMapsTrigger
     {
-        private readonly MapsSettings _settings;
-        private readonly HttpClient _http;
+        private readonly IMapService _service;
         private readonly ILogger<GoogleMapsTrigger> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GoogleMapsTrigger"/> class.
         /// </summary>
-        /// <param name="settings"><see cref="MapsSettings"/> instance.</param>
-        /// <param name="factory"><see cref="IHttpClientFactory"/> instance.</param>
+        /// <param name="factory"><see cref="IMapServiceFactory"/> instance.</param>
         /// <param name="log"><see cref="ILogger{TCategoryName}"/> instance.</param>
-        public GoogleMapsTrigger(MapsSettings settings, IHttpClientFactory factory, ILogger<GoogleMapsTrigger> log)
+        public GoogleMapsTrigger(IMapServiceFactory factory, ILogger<GoogleMapsTrigger> log)
         {
-            this._settings = settings.ThrowIfNullOrDefault();
-            this._http = factory.ThrowIfNullOrDefault().CreateClient("google");
+            this._service = factory.ThrowIfNullOrDefault().GetMapService(GoogleMapService.Name);
             this._logger = log.ThrowIfNullOrDefault();
         }
 
         /// <summary>
-        /// Invokes the endpoint.
+        /// Invokes the endpoint that returns the base64-encoded map image.
+        /// </summary>
+        /// <param name="req"><see cref="HttpRequest"/> instance.</param>
+        /// <returns>Returns <see cref="OkObjectResult"/> that contains the base64-encoded image.</returns>
+        [FunctionName(nameof(GoogleMapsTrigger.GetGoogleMap))]
+        [OpenApiOperation(operationId: nameof(GoogleMapsTrigger.GetGoogleMap), tags: new[] { "google" })]
+        [OpenApiParameter(name: "lat", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **latitude** parameter")]
+        [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
+        [OpenApiParameter(name: "zoom", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "The **zoom level** parameter &ndash; Default value is `14`")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(MapData), Description = "The base64-encoded map image as an OK response")]
+        public async Task<IActionResult> GetGoogleMap(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "google")] HttpRequest req)
+        {
+            this._logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            var bytes = await this._service.GetMapAsync(req).ConfigureAwait(false);
+            var result = new MapData() { Base64Image = $"data:image/png;base64,{Convert.ToBase64String(bytes)}" };
+
+            return new OkObjectResult(result);
+        }
+
+        /// <summary>
+        /// Invokes the endpoint that returns the map image as the binary format.
         /// </summary>
         /// <param name="req"><see cref="HttpRequest"/> instance.</param>
         /// <returns>Returns <see cref="FileContentResult"/> as the <c>image/png</c> format.</returns>
-        [FunctionName(nameof(GoogleMapsTrigger))]
-        [OpenApiOperation(operationId: "GetGoogleMap", tags: new[] { "maps" })]
+        [FunctionName(nameof(GoogleMapsTrigger.GetGoogleMapImage))]
+        [OpenApiOperation(operationId: nameof(GoogleMapsTrigger.GetGoogleMapImage), tags: new[] { "google" })]
         [OpenApiParameter(name: "lat", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **latitude** parameter")]
         [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
-        [OpenApiParameter(name: "zoom", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "The **zoom level** parameter &ndash; Default value is `14`")]
+        [OpenApiParameter(name: "zoom", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "The **zoom level** parameter &ndash; Default value is `14`")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "image/png", bodyType: typeof(byte[]), Description = "The map image as an OK response")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "google")] HttpRequest req)
+        public async Task<IActionResult> GetGoogleMapImage(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "google/image")] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            this._logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var latitude = req.Query["lat"];
-            var longitude = req.Query["long"];
-            var zoom = (string)req.Query["zoom"] ?? "14";
+            var bytes = await this._service.GetMapAsync(req).ConfigureAwait(false);
 
-            var sb = new StringBuilder();
-            sb.Append("https://maps.googleapis.com/maps/api/staticmap")
-              .Append($"?center={latitude},{longitude}")
-              .Append("&size=400x400")
-              .Append($"&zoom={zoom}")
-              .Append($"&markers=color:red|{latitude},{longitude}")
-              .Append("&format=png32")
-              .Append($"&key={this._settings.Google.ApiKey}");
-            var requestUri = new Uri(sb.ToString());
-
-            var result = await this._http.GetByteArrayAsync(requestUri).ConfigureAwait(false);
-
-            return new FileContentResult(result, "image/png");
+            return new FileContentResult(bytes, "image/png");
         }
     }
 }

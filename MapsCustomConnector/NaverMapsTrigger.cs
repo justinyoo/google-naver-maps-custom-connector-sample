@@ -1,10 +1,9 @@
 using System;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-using MapsCustomConnector.Configs;
+using MapsCustomConnector.Models;
+using MapsCustomConnector.Services;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,61 +21,61 @@ namespace MapsCustomConnector
     /// </summary>
     public class NaverMapsTrigger
     {
-        private readonly MapsSettings _settings;
-        private readonly HttpClient _http;
+        private readonly IMapService _service;
         private readonly ILogger<NaverMapsTrigger> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NaverMapsTrigger"/> class.
         /// </summary>
-        /// <param name="settings"><see cref="MapsSettings"/> instance.</param>
-        /// <param name="factory"><see cref="IHttpClientFactory"/> instance.</param>
+        /// <param name="factory"><see cref="IMapServiceFactory"/> instance.</param>
         /// <param name="log"><see cref="ILogger{TCategoryName}"/> instance.</param>
-        public NaverMapsTrigger(MapsSettings settings, IHttpClientFactory factory, ILogger<NaverMapsTrigger> log)
+        public NaverMapsTrigger(IMapServiceFactory factory, ILogger<NaverMapsTrigger> log)
         {
-            this._settings = settings.ThrowIfNullOrDefault();
-            this._http = factory.ThrowIfNullOrDefault().CreateClient("naver");
+            this._service = factory.ThrowIfNullOrDefault().GetMapService(NaverMapService.Name);
             this._logger = log.ThrowIfNullOrDefault();
         }
 
         /// <summary>
-        /// Invokes the endpoint.
+        /// Invokes the endpoint that returns the base64-encoded map image.
+        /// </summary>
+        /// <param name="req"><see cref="HttpRequest"/> instance.</param>
+        /// <returns>Returns <see cref="OkObjectResult"/> that contains the base64-encoded image.</returns>
+        [FunctionName(nameof(NaverMapsTrigger.GetNaverMap))]
+        [OpenApiOperation(operationId: nameof(NaverMapsTrigger.GetNaverMap), tags: new[] { "naver" })]
+        [OpenApiParameter(name: "lat", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **latitude** parameter")]
+        [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
+        [OpenApiParameter(name: "zoom", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "The **zoom level** parameter &ndash; Default value is `13`")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(MapData), Description = "The base64-encoded map image as an OK response")]
+        public async Task<IActionResult> GetNaverMap(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "naver")] HttpRequest req)
+        {
+            this._logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            var bytes = await this._service.GetMapAsync(req).ConfigureAwait(false);
+            var result = new MapData() { Base64Image = $"data:image/png;base64,{Convert.ToBase64String(bytes)}" };
+
+            return new OkObjectResult(result);
+        }
+
+        /// <summary>
+        /// Invokes the endpoint that returns the map image as the binary format.
         /// </summary>
         /// <param name="req"><see cref="HttpRequest"/> instance.</param>
         /// <returns>Returns <see cref="FileContentResult"/> as the <c>image/png</c> format.</returns>
-        [FunctionName(nameof(NaverMapsTrigger))]
-        [OpenApiOperation(operationId: "GetNaverMap", tags: new[] { "maps" })]
+        [FunctionName(nameof(NaverMapsTrigger.GetNaverMapImage))]
+        [OpenApiOperation(operationId: nameof(NaverMapsTrigger.GetNaverMapImage), tags: new[] { "naver" })]
         [OpenApiParameter(name: "lat", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **latitude** parameter")]
         [OpenApiParameter(name: "long", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **longitude** parameter")]
-        [OpenApiParameter(name: "zoom", In = ParameterLocation.Query, Required = false, Type = typeof(int), Description = "The **zoom level** parameter &ndash; Default value is `13`")]
+        [OpenApiParameter(name: "zoom", In = ParameterLocation.Query, Required = false, Type = typeof(string), Description = "The **zoom level** parameter &ndash; Default value is `13`")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "image/png", bodyType: typeof(byte[]), Description = "The map image as an OK response")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "naver")] HttpRequest req)
+        public async Task<IActionResult> GetNaverMapImage(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "naver/image")] HttpRequest req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            this._logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var latitude = req.Query["lat"];
-            var longitude = req.Query["long"];
-            var zoom = (string)req.Query["zoom"] ?? "13";
+            var bytes = await this._service.GetMapAsync(req).ConfigureAwait(false);
 
-            var sb = new StringBuilder();
-            sb.Append("https://naveropenapi.apigw.ntruss.com/map-static/v2/raster")
-              .Append($"?center={longitude},{latitude}")
-              .Append("&w=400")
-              .Append("&h=400")
-              .Append($"&level={zoom}")
-              .Append($"&markers=color:blue|pos:{longitude}%20{latitude}")
-              .Append("&format=png")
-              .Append("&lang=en");
-            var requestUri = new Uri(sb.ToString());
-
-            this._http.DefaultRequestHeaders.Clear();
-            this._http.DefaultRequestHeaders.Add("X-NCP-APIGW-API-KEY-ID", this._settings.Naver.ClientId);
-            this._http.DefaultRequestHeaders.Add("X-NCP-APIGW-API-KEY", this._settings.Naver.ClientSecret);
-
-            var result = await this._http.GetByteArrayAsync(requestUri);
-
-            return new FileContentResult(result, "image/png");
+            return new FileContentResult(bytes, "image/png");
         }
     }
 }

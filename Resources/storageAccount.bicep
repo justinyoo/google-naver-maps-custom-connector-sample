@@ -31,6 +31,7 @@ resource stblob 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01' = {
       corsRules: [
         {
           allowedOrigins: [
+            'https://flow.microsoft.com'
             'https://make.powerapps.com'
             'https://make.powerautomate.com'
           ]
