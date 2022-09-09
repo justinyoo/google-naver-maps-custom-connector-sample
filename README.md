@@ -8,7 +8,6 @@ This provides a sample Azure Functions app to build a [Power Platform Custom Con
 1. Fork this repository into your account.
 2. Get your GitHub secrets ready:
    * Azure resource name ➡️ `AZURE_RESOURCE_NAME`
-   * Azure resource suffix ➡️ `AZURE_RESOURCE_SUFFIX`
    * [Azure credentials](https://github.com/Azure/login#configure-deployment-credentials) ➡️ `AZURE_CREDENTIALS`
    * [Google Maps API key](https://developers.google.com/maps/documentation/maps-static) ➡️ `MAPS_GOOGLE_APIKEY`
    * [Naver Map API client ID (optional)](https://api.ncloud-docs.com/docs/en/ai-naver-mapsstaticmap) ➡️ `MAPS_NAVER_CLIENTID`
@@ -22,7 +21,6 @@ This provides a sample Azure Functions app to build a [Power Platform Custom Con
    Make sure that:
 
    * You know your resource name.
-   * You know your resource suffix.
    * You know your GitHub Personal Access Token.
 
 5. Visit the following URL to check whether you can see all the apps properly provisioned and deployed, or not.

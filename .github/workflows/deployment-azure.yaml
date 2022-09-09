@@ -13,21 +13,16 @@ on:
         required: false
         description: Azure resource name
         default: ''
-      resource_suffix:
-        type: string
-        required: false
-        description: Azure resource suffix
-        default: 'api'
       do_not_deploy:
         type: string
         required: false
-        description: Azure resource suffix
+        description: Value indicating whether to deploy app or not
         default: 'false'
 
 env:
   AZURE_RESOURCE_GROUP_NAME: 'rg-${{ inputs.resource_name }}'
   AZURE_RESOURCE_NAME: ${{ inputs.resource_name }}
-  AZURE_RESOURCE_SUFFIX: ${{ inputs.resource_suffix }}
+  AZURE_RESOURCE_SUFFIX: 'api'
   DO_NOT_DEPLOY: ${{ inputs.do_not_deploy }}
 
 jobs:
@@ -41,9 +36,6 @@ jobs:
         if (("${{ env.AZURE_RESOURCE_NAME }}" -eq $null) -or ("${{ env.AZURE_RESOURCE_NAME }}" -eq "")) {
           echo "AZURE_RESOURCE_GROUP_NAME=rg-${{ secrets.AZURE_RESOURCE_NAME }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
           echo "AZURE_RESOURCE_NAME=${{ secrets.AZURE_RESOURCE_NAME }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
-        }
-        if (("${{ env.AZURE_RESOURCE_SUFFIX }}" -eq $null) -or ("${{ env.AZURE_RESOURCE_SUFFIX }}" -eq "")) {
-          echo "AZURE_RESOURCE_SUFFIX=${{ secrets.AZURE_RESOURCE_SUFFIX }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
         }
         if (("${{ env.DO_NOT_DEPLOY }}" -eq $null) -or ("${{ env.DO_NOT_DEPLOY }}" -eq "")) {
           echo "DO_NOT_DEPLOY=false" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
