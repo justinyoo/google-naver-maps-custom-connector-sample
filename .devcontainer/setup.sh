@@ -6,6 +6,8 @@ sudo apt-get update \
 git config --global pull.rebase false
 git config --global core.autocrlf false
 
+cd ~
+
 ## Install node.js 16 LTS
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
