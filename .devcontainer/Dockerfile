@@ -27,3 +27,8 @@ RUN apt-get update && apt install -y gnupg \
 
 # Install Bicep
 RUN az bicep install
+
+# Setup
+WORKDIR /home/
+COPY . .
+RUN bash ./setup.sh
