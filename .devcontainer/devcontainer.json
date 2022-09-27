@@ -10,8 +10,10 @@
     "vscode": {
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
+        "ms-dotnettools.csharp",
         "ms-azuretools.vscode-azurefunctions",
-        "ms-dotnettools.csharp"
+        "ms-azuretools.vscode-bicep",
+        "ms-vscode.PowerShell"
       ]
     }
   },
