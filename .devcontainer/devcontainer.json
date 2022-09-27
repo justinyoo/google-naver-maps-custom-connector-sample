@@ -14,7 +14,15 @@
         "ms-azuretools.vscode-azurefunctions",
         "ms-azuretools.vscode-bicep",
         "ms-vscode.PowerShell"
-      ]
+      ],
+      "settings": {
+        "editor.minimap.enabled": false,
+        "explorer.sortOrder": "type",
+        "explorer.fileNesting.enabled": true,
+        "explorer.fileNesting.patterns": {
+          "*.bicep": "${capture}.json"
+        }
+      }
     }
   },
   // Use 'postCreateCommand' to run commands after the container is created.
