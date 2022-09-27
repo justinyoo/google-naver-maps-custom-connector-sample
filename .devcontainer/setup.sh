@@ -1,6 +1,6 @@
 ## Install apt packages
-apt-get update \
-    && apt-get install -y dos2unix
+sudo apt-get update \
+    && sudo apt-get install -y dos2unix
 
 ## Configure git
 git config --global pull.rebase false
