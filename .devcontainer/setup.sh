@@ -1,6 +1,6 @@
 ## Install apt packages
-apt-get update && \
-apt-get install -y dos2unix
+apt-get update \
+    && apt-get install -y dos2unix
 
 ## Configure git
 git config --global pull.rebase false
@@ -15,6 +15,9 @@ nvm install --lts
 
 ## Enable local HTTPS for .NET
 dotnet dev-certs https --trust
+
+# Install Bicep
+az bicep install
 
 ## Install oh-my-zsh
 # sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
