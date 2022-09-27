@@ -21,7 +21,8 @@
         "explorer.fileNesting.enabled": true,
         "explorer.fileNesting.patterns": {
           "*.bicep": "${capture}.json"
-        }
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh"
       }
     }
   },

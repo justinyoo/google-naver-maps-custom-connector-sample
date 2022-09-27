@@ -30,3 +30,6 @@ git clone https://github.com/romkatv/powerlevel10k.git "$HOME/.oh-my-zsh/custom/
 ln -s "$HOME/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme" "$HOME/.oh-my-zsh/custom/themes/powerlevel10k.zsh-theme"
 
 # . ~/.zshrc
+
+# Restore NuGet packages
+dotnet restore .
