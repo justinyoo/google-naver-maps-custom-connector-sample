@@ -51,5 +51,5 @@ This provides a sample Azure Functions app to build a [Power Platform Custom Con
 
 ## More Readings ##
 
-* [#ServerlessSeptember: Where am I now? - Serverless Power Platform custom connector for Google Maps and Naver Map](https://azure.github.io/Cloud-Native/blog/to-be-announced)
+* [#ServerlessSeptember: Where am I now? - Serverless Power Platform custom connector for Google Maps and Naver Map](https://azure.github.io/Cloud-Native/blog/28-where-am-i/)
 * [30 Days of Serverless](https://azure.github.io/Cloud-Native/serverless-september/30DaysOfServerless)
