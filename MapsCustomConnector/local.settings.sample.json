@@ -12,11 +12,6 @@
     "Maps__Google__ApiKey": "<GOOGLE_MAPS_API_KEY>",
 
     "Maps__Naver__ClientId": "<NAVER_MAP_API_CLIENT_ID>",
-    "Maps__Naver__ClientSecret": "<NAVER_MAP_API_CLIENT_SECRET>",
-
-    // Only for use on GitHub Codespaces
-    "OpenApi__ForceHttps": "true",
-    "OpenApi__HostNames": "https://google-naver-maps-custom-connector-sample-<CODESPACE_NAME>-7071.githubpreview.dev/api",
-    "OpenApi__RunOnCodespaces": "true"
+    "Maps__Naver__ClientSecret": "<NAVER_MAP_API_CLIENT_SECRET>"
   }
 }
