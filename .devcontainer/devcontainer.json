@@ -59,6 +59,7 @@
         "GitHub.vscode-pull-request-github",
 
         // Recommended extensions - Azure
+        "Azurite.azurite",
         "ms-azuretools.vscode-bicep",
 
         // Recommended extensions - Collaboration
