@@ -5,6 +5,7 @@
 
     <AssemblyName>MapsCustomConnector</AssemblyName>
     <RootNamespace>MapsCustomConnector</RootNamespace>
+    <UserSecretsId>7c17aa95-50ca-4176-8e84-61a8c07ca6d5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

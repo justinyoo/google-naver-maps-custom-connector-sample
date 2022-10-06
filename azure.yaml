@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: google-naver-maps-custom-connector-sample
+infra:
+    provider: "bicep"
+    path: "infra"
+    module: "main"
+pipeline:
+    provider: "github"
+services:
+  fncapp:
+    project: './src/MapsCustomConnector'
+    host: function
+    language: csharp
+    resourceName: fncapp-mapsdev-api
